@@ -46,11 +46,32 @@ function renderPage() {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  useUsersStore.setState({ users: mockUsers, loading: false, error: null })
+  localStorage.clear()
+  useUsersStore.setState({ users: [], loading: false, error: null })
+})
+
+describe('UsersStore — segurança localStorage', () => {
+  it('F2-CA1: password não é persistida em localStorage ao criar usuário', async () => {
+    useUsersStore.setState({ users: [], loading: false, error: null })
+    await useUsersStore.getState().addUser({
+      firstname: 'Test',
+      lastname: 'User',
+      email: 'test@email.com',
+      username: 'testuser',
+      password: 'secret123',
+      phone: '999',
+    })
+    const stored = JSON.parse(localStorage.getItem('admin_users') ?? '[]') as Record<string, unknown>[]
+    expect(stored.length).toBeGreaterThan(0)
+    stored.forEach((u) => {
+      expect(u).not.toHaveProperty('password')
+    })
+  })
 })
 
 describe('UsersPage (Admin)', () => {
   it('CA-F2.1-1: shows username, email and name for each user', () => {
+    useUsersStore.setState({ users: mockUsers, loading: false, error: null })
     renderPage()
     expect(screen.getByText('johnd')).toBeInTheDocument()
     expect(screen.getByText('john@email.com')).toBeInTheDocument()
@@ -59,6 +80,7 @@ describe('UsersPage (Admin)', () => {
   })
 
   it('CA-F2.1-2: creates a new user and shows it in the list', async () => {
+    useUsersStore.setState({ users: mockUsers, loading: false, error: null })
     renderPage()
 
     await userEvent.click(screen.getByRole('button', { name: /novo usuário/i }))
@@ -80,6 +102,7 @@ describe('UsersPage (Admin)', () => {
   })
 
   it('CA-F2.1-3: store updateUser reflects updated email in the list', async () => {
+    useUsersStore.setState({ users: mockUsers, loading: false, error: null })
     renderPage()
 
     // Verify initial state
@@ -102,6 +125,7 @@ describe('UsersPage (Admin)', () => {
   })
 
   it('CA-F2.1-4: deletes a user and removes from the list', async () => {
+    useUsersStore.setState({ users: mockUsers, loading: false, error: null })
     renderPage()
 
     expect(screen.getByText('johnd')).toBeInTheDocument()

@@ -5,6 +5,13 @@ import { getItem, setItem } from '../utils/localStorage'
 
 const STORAGE_KEY = 'admin_users'
 
+type SafeUser = Omit<FakeStoreUser, 'password'>
+
+function stripPassword(u: FakeStoreUser): SafeUser {
+  const { password: _pw, ...safe } = u
+  return safe
+}
+
 interface UsersStore {
   users: FakeStoreUser[]
   loading: boolean
@@ -30,7 +37,7 @@ export const useUsersStore = create<UsersStore>()((set, get) => ({
     set({ loading: true, error: null })
     try {
       const users = await usersService.getAll()
-      setItem(STORAGE_KEY, users)
+      setItem(STORAGE_KEY, users.map(stripPassword))
       set({ users, loading: false })
     } catch (err) {
       set({ error: (err as Error).message, loading: false })
@@ -55,7 +62,7 @@ export const useUsersStore = create<UsersStore>()((set, get) => ({
       },
     }
     const users = [...get().users, newUser]
-    setItem(STORAGE_KEY, users)
+    setItem(STORAGE_KEY, users.map(stripPassword))
     set({ users })
   },
 
@@ -72,14 +79,14 @@ export const useUsersStore = create<UsersStore>()((set, get) => ({
           }
         : u
     )
-    setItem(STORAGE_KEY, users)
+    setItem(STORAGE_KEY, users.map(stripPassword))
     set({ users })
   },
 
   removeUser: async (id) => {
     try { await usersService.remove(id) } catch {}
     const users = get().users.filter((u) => u.id !== id)
-    setItem(STORAGE_KEY, users)
+    setItem(STORAGE_KEY, users.map(stripPassword))
     set({ users })
   },
 }))

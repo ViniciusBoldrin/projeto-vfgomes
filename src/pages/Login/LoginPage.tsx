@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../../services/authService'
-import { useAuthStore, ADMIN_USERNAME } from '../../store/authStore'
+import { useAuthStore } from '../../store/authStore'
+
+const ADMIN_USERNAME = 'mor_2314'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -44,7 +46,7 @@ export default function LoginPage() {
       <div className="flex flex-col items-center justify-center px-8 md:px-16 bg-white dark:bg-black min-h-screen md:min-h-0">
         {/* Logo */}
         <h1 className="font-serif text-2xl tracking-[0.4em] uppercase text-black dark:text-white mb-12">
-          FAKESTORE
+          VF GOMES
         </h1>
 
         <form onSubmit={handleSubmit} noValidate className="w-full max-w-xs space-y-8">
@@ -108,9 +110,6 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="mt-12 text-center text-xs text-neutral-300 dark:text-neutral-700">
-          Admin: mor_2314 · Cliente: kevinryan
-        </p>
       </div>
     </div>
   )

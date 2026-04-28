@@ -49,7 +49,7 @@ export function UserForm({ isOpen, onClose, onSubmit, initialData }: UserFormPro
         </div>
         <Input label="Email" type="email" value={form.email} onChange={handleChange('email')} required />
         <Input label="Username" value={form.username} onChange={handleChange('username')} required />
-        <Input label="Senha" type="password" value={form.password} onChange={handleChange('password')} />
+        <Input label="Senha" type="password" value={form.password} onChange={handleChange('password')} required={!initialData} />
         <Input label="Telefone" value={form.phone} onChange={handleChange('phone')} />
 
         <div className="flex gap-3 justify-end pt-2">

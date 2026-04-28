@@ -50,10 +50,21 @@ describe('LoginPage — design system Zara', () => {
     expect(btn.className).toContain('uppercase')
   })
 
-  it('CA-D2-3: logo FAKESTORE tem font-serif', () => {
+  it('CA-D2-3: logo VF GOMES tem font-serif', () => {
     renderLogin()
-    const logo = screen.getByText('FAKESTORE')
+    const logo = screen.getByText('VF GOMES')
     expect(logo.className).toContain('font-serif')
+  })
+
+  it('F1-CA1: credenciais de login não aparecem no HTML da página', () => {
+    renderLogin()
+    expect(screen.queryByText(/mor_2314/)).toBeNull()
+    expect(screen.queryByText(/kevinryan/)).toBeNull()
+  })
+
+  it('F5-CA2: texto "FAKESTORE" não aparece no DOM', () => {
+    renderLogin()
+    expect(screen.queryByText('FAKESTORE')).toBeNull()
   })
 })
 

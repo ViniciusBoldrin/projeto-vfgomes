@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Modal } from '../ui/Modal'
 import { Input } from '../ui/Input'
 import { Button } from '../ui/Button'
@@ -20,6 +20,16 @@ export function ProductForm({ isOpen, onClose, onSubmit, initialData }: ProductF
     image: initialData?.image ?? '',
   })
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setForm({
+      title: initialData?.title ?? '',
+      price: initialData?.price ?? 0,
+      description: initialData?.description ?? '',
+      category: initialData?.category ?? '',
+      image: initialData?.image ?? '',
+    })
+  }, [initialData])
 
   function handleChange(field: keyof ProductFormData) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -54,7 +64,7 @@ export function ProductForm({ isOpen, onClose, onSubmit, initialData }: ProductF
           label="Preço"
           type="number"
           step="0.01"
-          min="0"
+          min="0.01"
           value={form.price}
           onChange={handleChange('price')}
           required
