@@ -2,11 +2,6 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 /* ─── Design Tokens ─────────────────────────────────────────── */
 
@@ -39,6 +34,12 @@
   --container-wide: 1280px;
   --container-narrow: 720px;
   --container-px: clamp(1rem, 4vw, 4rem);
+
+  /* Zattini brand tokens */
+  --c-brand: #f4546a;
+  --c-accent: #00c7c7;
+  --c-success: #10ba78;
+  --radius-btn: 8px;
 }
 
 /* Dark mode — inverte os tokens de cor */
@@ -94,6 +95,36 @@ body {
 .animate-fade-in   { animation: fade-in 0.3s ease-out; }
 .animate-slide-right  { animation: slide-right 0.3s ease-out; }
 .animate-slide-in-top { animation: slide-in-top 0.2s ease-out; }
+
+/* ─── Input Flutuante (Zattini base-input pattern) ──────────── */
+
+.input-wrapper {
+  position: relative;
+  padding-top: 1.25rem;
+}
+
+.input-label {
+  position: absolute;
+  top: 1.25rem;
+  left: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-muted);
+  transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+}
+
+.input-field:focus ~ .input-label,
+.input-field:not(:placeholder-shown) ~ .input-label {
+  top: 0;
+  font-size: 0.625rem;
+  color: var(--c-brand);
+}
+
+.input-field:focus {
+  border-color: var(--c-brand);
+}
 
 /* ─── Utilities ──────────────────────────────────────────────── */
 

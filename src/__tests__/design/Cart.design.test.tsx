@@ -33,19 +33,25 @@ afterEach(() => {
   useCartStore.setState({ items: [], total: 0 })
 })
 
-describe('CartPage — design system Polish', () => {
-  it('CA-DS7-1: lista de itens usa Container narrow', () => {
+describe('CartPage — design system Zattini', () => {
+  it('lista de itens usa Container narrow', () => {
     renderPage()
     const narrowContainers = document.querySelectorAll('[data-container="narrow"]')
     expect(narrowContainers.length).toBeGreaterThan(0)
   })
 
-  it('CA-DS7-1: footer de checkout usa Container narrow', () => {
+  it('footer de checkout usa Container narrow', () => {
     renderPage()
-    // O footer sticky deve ter um Container narrow interno
     const stickyEl = document.querySelector('[class*="sticky"][class*="bottom-0"]')
     expect(stickyEl).toBeTruthy()
     const narrowInFooter = stickyEl?.querySelector('[data-container="narrow"]')
     expect(narrowInFooter).toBeTruthy()
+  })
+
+  it('botão "Finalizar compra" tem data-variant="primary" (Button Zattini)', () => {
+    renderPage()
+    const btn = document.querySelector('[data-variant="primary"]')
+    expect(btn).toBeTruthy()
+    expect(btn?.textContent?.trim()).toContain('Finalizar compra')
   })
 })

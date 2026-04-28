@@ -8,22 +8,31 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
 }
 
-const variants: Record<Variant, string> = {
-  primary: 'bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-400',
-  secondary: 'bg-white text-black border border-black hover:bg-neutral-50 dark:bg-black dark:text-white dark:border-white dark:hover:bg-neutral-900',
-  danger: 'bg-black text-white border border-red-600 hover:bg-red-600 disabled:opacity-50',
-  ghost: 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300',
+const variantClasses: Record<Variant, string> = {
+  primary:   'text-white disabled:opacity-50',
+  secondary: 'bg-transparent disabled:opacity-50',
+  danger:    'bg-white text-red-600 border border-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50',
+  ghost:     'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300',
 }
 
-export function Button({ variant = 'primary', loading, children, className, disabled, ...props }: ButtonProps) {
+const variantStyles: Record<Variant, React.CSSProperties> = {
+  primary:   { backgroundColor: 'var(--c-brand)', color: '#fff' },
+  secondary: { borderColor: 'var(--c-accent)', color: 'var(--c-accent)', borderWidth: '1px', borderStyle: 'solid' },
+  danger:    {},
+  ghost:     {},
+}
+
+export function Button({ variant = 'primary', loading, children, className, disabled, style, ...props }: ButtonProps) {
   return (
     <button
+      data-variant={variant}
       disabled={disabled || loading}
+      style={{ ...variantStyles[variant], ...style }}
       className={cn(
-        'inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium tracking-widest uppercase transition-colors duration-200',
+        'inline-flex items-center justify-center gap-2 px-4 py-3.5 text-xs font-semibold tracking-widest uppercase rounded-lg transition-colors duration-200',
         'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black',
-        'disabled:cursor-not-allowed disabled:opacity-50',
-        variants[variant],
+        'disabled:cursor-not-allowed',
+        variantClasses[variant],
         className
       )}
       {...props}

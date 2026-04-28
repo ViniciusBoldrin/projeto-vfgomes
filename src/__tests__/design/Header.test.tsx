@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Header } from '../../components/layout/Header'
 
-// Mocks mínimos para o Header funcionar
 vi.mock('../../store/authStore', () => ({
   useAuthStore: () => ({ logout: vi.fn(), username: 'testuser' }),
 }))
@@ -28,7 +27,6 @@ function renderHeader(props = {}) {
   )
 }
 
-// Import ClientLayout para testar o header inline
 import ClientLayout from '../../components/layout/ClientLayout'
 
 function renderClientLayout() {
@@ -39,8 +37,8 @@ function renderClientLayout() {
   )
 }
 
-describe('Header (ClientLayout) — design system Polish', () => {
-  it('CA-DS5-1: header do ClientLayout contém [data-container] para centralização', () => {
+describe('Header (ClientLayout) — design system Zattini', () => {
+  it('header do ClientLayout contém [data-container] para centralização', () => {
     renderClientLayout()
     const header = document.querySelector('header')
     expect(header).toBeTruthy()
@@ -49,11 +47,11 @@ describe('Header (ClientLayout) — design system Polish', () => {
   })
 })
 
-describe('Header — design system Zara', () => {
-  it('elemento header tem classe h-12', () => {
+describe('Header — design system Zattini', () => {
+  it('elemento header tem classe h-14 (56px)', () => {
     renderHeader()
     const header = document.querySelector('header')
-    expect(header?.className).toContain('h-12')
+    expect(header?.className).toContain('h-14')
   })
 
   it('header tem sticky top-0', () => {
@@ -63,17 +61,34 @@ describe('Header — design system Zara', () => {
     expect(header?.className).toContain('top-0')
   })
 
-  it('logo usa font-serif', () => {
+  it('logo exibe "VF GOMES"', () => {
     renderHeader()
-    // Logo deve ser FAKESTORE com fonte serif
-    const logo = screen.getByText('FAKESTORE')
-    expect(logo.className).toContain('font-serif')
+    expect(screen.getByText('VF GOMES')).toBeTruthy()
+  })
+
+  it('logo usa font-sans font-bold (não font-serif)', () => {
+    renderHeader()
+    const logo = screen.getByText('VF GOMES')
+    expect(logo.className).toContain('font-bold')
+    expect(logo.className).not.toContain('font-serif')
+  })
+
+  it('"Compra Segura" é exibido quando showCart=true', () => {
+    renderHeader({ showCart: true, onCartClick: vi.fn() })
+    expect(screen.getByText('Compra Segura')).toBeTruthy()
+  })
+
+  it('badge do carrinho usa --c-brand como backgroundColor', () => {
+    renderHeader({ showCart: true, cartCount: 3, onCartClick: vi.fn() })
+    const badge = document.querySelector('[data-badge="cart"]')
+    expect(badge).toBeTruthy()
+    expect((badge as HTMLElement).style.backgroundColor).toBe('var(--c-brand)')
   })
 
   it('hamburger abre drawer com animate-slide-right', () => {
     renderHeader({ onMenuToggle: undefined })
     const hamburger = screen.queryByLabelText('Abrir menu')
-    if (!hamburger) return // em desktop pode não estar visível no jsdom
+    if (!hamburger) return
 
     fireEvent.click(hamburger)
     const drawer = document.querySelector('.animate-slide-right')

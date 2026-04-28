@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useCartStore } from '../../../store/cartStore'
 import { CartItem } from '../../../components/shared/CartItem'
 import { Container } from '../../../components/ui/Container'
+import { Button } from '../../../components/ui/Button'
 import { formatCurrency } from '../../../utils/currency'
 
 export default function CartPage() {
@@ -104,16 +105,9 @@ export default function CartPage() {
               {formatCurrency(total)}
             </p>
           </div>
-          <button
-            onClick={handleCheckout}
-            className="text-xs uppercase tracking-widest px-8 py-3 transition-colors focus-visible:outline-none focus-visible:ring-1"
-            style={{
-              backgroundColor: 'var(--c-black)',
-              color: 'var(--c-white)',
-            }}
-          >
+          <Button variant="primary" onClick={handleCheckout} className="w-full md:w-auto">
             Finalizar compra
-          </button>
+          </Button>
         </Container>
       </div>
     </div>

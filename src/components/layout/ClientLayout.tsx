@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useCartStore } from '../../store/cartStore'
 import { useTheme } from '../../context/ThemeContext'
@@ -12,7 +12,8 @@ export default function ClientLayout() {
   const { items } = useCartStore()
   const { theme, toggleTheme } = useTheme()
   const [searchOpen, setSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchParams] = useSearchParams()
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') ?? '')
 
   function handleLogout() {
     logout()
@@ -31,7 +32,7 @@ export default function ClientLayout() {
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--c-bg)', color: 'var(--c-text)' }}>
       {/* Header — centrado via Container */}
       <header
-        className="h-12 sticky top-0 z-40 shrink-0 border-b"
+        className="h-14 sticky top-0 z-40 shrink-0 border-b"
         style={{
           borderColor: 'var(--c-border)',
           backgroundColor: 'var(--c-bg)',
@@ -52,16 +53,16 @@ export default function ClientLayout() {
           <div className="flex justify-center w-1/3">
             <Link
               to="/store"
-              className="font-serif text-sm tracking-[0.4em] uppercase hover:opacity-60 transition-opacity"
+              className="font-sans font-bold text-sm tracking-[0.3em] uppercase hover:opacity-60 transition-opacity"
               style={{ color: 'var(--c-text)' }}
             >
-              FAKESTORE
+              VF GOMES outlet
             </Link>
           </div>
 
           {/* Direita — ações */}
           <div className="flex items-center justify-end gap-3 w-1/3">
-            {/* Busca — ícone em mobile, campo inline em desktop */}
+            {/* Busca — campo inline em desktop */}
             <div className="hidden md:flex items-center gap-2">
               <form onSubmit={handleSearch} className="flex items-center gap-2">
                 <label htmlFor="search-desktop" className="sr-only">Buscar produtos</label>
@@ -107,16 +108,23 @@ export default function ClientLayout() {
               </svg>
               {cartCount > 0 && (
                 <span
-                  className="absolute -top-1 -right-1 text-[10px] w-4 h-4 flex items-center justify-center leading-none"
-                  style={{
-                    backgroundColor: 'var(--c-text)',
-                    color: 'var(--c-bg)',
-                  }}
+                  data-badge="cart"
+                  className="absolute -top-1 -right-1 text-white text-[10px] w-4 h-4 flex items-center justify-center leading-none rounded-full"
+                  style={{ backgroundColor: 'var(--c-brand)' }}
                 >
                   {cartCount > 99 ? '99+' : cartCount}
                 </span>
               )}
             </Link>
+
+            {/* Compra Segura */}
+            <div className="hidden md:flex items-center gap-1" style={{ color: 'var(--c-muted)' }}>
+              <svg width="12" height="14" viewBox="0 0 22 25" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" clipRule="evenodd" d="M16.5 7H18A7 7 0 1 0 4 7h1.5a5.5 5.5 0 1 1 11 0ZM20.5 8.5h-19v15h19v-15ZM0 7v18h22V7H0Z" />
+                <path fillRule="evenodd" clipRule="evenodd" d="m11.5 16.566.5-.448a1.5 1.5 0 1 0-2 0l.5.448V20a.5.5 0 0 0 1 0v-3.434Zm1.5.67V20a2 2 0 1 1-4 0v-2.764a3 3 0 1 1 4 0Z" />
+              </svg>
+              <span className="text-xs">Compra Segura</span>
+            </div>
 
             {/* Tema */}
             <button

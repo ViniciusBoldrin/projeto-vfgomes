@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useProducts } from '../../../hooks/useProducts'
 import { useCartStore } from '../../../store/cartStore'
 import { ProductCard } from '../../../components/shared/ProductCard'
@@ -6,6 +8,13 @@ import { Button } from '../../../components/ui/Button'
 import { Toast, useToast } from '../../../components/ui/Toast'
 import { Container } from '../../../components/ui/Container'
 import type { Product } from '../../../types/product'
+
+const BANNERS = [
+  '/banners/maes70.png',
+  '/banners/looks-treino.png',
+  '/banners/all-jeans.png',
+  '/banners/lancamentos-vans.png',
+]
 
 export default function StorePage() {
   const {
@@ -20,6 +29,19 @@ export default function StorePage() {
   } = useProducts()
   const { addToCart } = useCartStore()
   const { toast, showToast, closeToast } = useToast()
+  const [bannerIdx, setBannerIdx] = useState(0)
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get('q') ?? '')
+  }, [searchParams])
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setBannerIdx((i) => (i + 1) % BANNERS.length)
+    }, 4000)
+    return () => clearInterval(id)
+  }, [])
 
   function handleAddToCart(product: Product) {
     addToCart(product)
@@ -27,23 +49,38 @@ export default function StorePage() {
   }
 
   return (
-    <Container className="py-8 md:py-12">
+    <>
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
-      {/* Filtros de categoria */}
+      {/* Banner promocional — full-width, fora do Container */}
+      <div
+        data-banner
+        className="w-full overflow-hidden"
+        style={{ aspectRatio: '1922/500' }}
+      >
+        <img
+          src={BANNERS[bannerIdx]}
+          alt="Promoção"
+          loading="lazy"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+    <Container className="py-8">
+      {/* Filtros de categoria — chips estilo Zattini */}
       {!loading && categories.length > 0 && (
-        <div
-          className="flex border-b overflow-x-auto mb-8"
-          style={{ borderColor: 'var(--c-border)' }}
-        >
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-8">
           <button
             onClick={() => setSelectedCategory('')}
-            className={`shrink-0 text-xs uppercase tracking-widest py-3 px-4 transition-colors focus-visible:outline-none ${
+            data-active={selectedCategory === '' ? 'true' : 'false'}
+            style={
               selectedCategory === ''
-                ? 'border-b-2 border-black dark:border-white text-black dark:text-white'
-                : ''
+                ? { backgroundColor: 'var(--c-brand)' }
+                : { borderColor: 'var(--c-border)', color: 'var(--c-muted)' }
+            }
+            className={`shrink-0 text-xs uppercase tracking-widest py-2 px-4 rounded-[20px] transition-opacity hover:opacity-80 focus-visible:outline-none ${
+              selectedCategory === '' ? 'text-white' : 'border bg-transparent'
             }`}
-            style={selectedCategory !== '' ? { color: 'var(--c-muted)' } : undefined}
           >
             Todos
           </button>
@@ -51,12 +88,15 @@ export default function StorePage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`shrink-0 text-xs uppercase tracking-widest py-3 px-4 transition-colors focus-visible:outline-none ${
+              data-active={selectedCategory === cat ? 'true' : 'false'}
+              style={
                 selectedCategory === cat
-                  ? 'border-b-2 border-black dark:border-white text-black dark:text-white'
-                  : ''
+                  ? { backgroundColor: 'var(--c-brand)' }
+                  : { borderColor: 'var(--c-border)', color: 'var(--c-muted)' }
+              }
+              className={`shrink-0 text-xs uppercase tracking-widest py-2 px-4 rounded-[20px] transition-opacity hover:opacity-80 focus-visible:outline-none ${
+                selectedCategory === cat ? 'text-white' : 'border bg-transparent'
               }`}
-              style={selectedCategory !== cat ? { color: 'var(--c-muted)' } : undefined}
             >
               {cat}
             </button>
@@ -108,7 +148,7 @@ export default function StorePage() {
         </div>
       )}
 
-      {/* Grid de produtos — gap real (não gap-px) */}
+      {/* Grid de produtos */}
       {!loading && !error && filteredProducts.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {filteredProducts.map((product) => (
@@ -121,5 +161,6 @@ export default function StorePage() {
         </div>
       )}
     </Container>
+    </>
   )
 }

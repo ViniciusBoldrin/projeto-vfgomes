@@ -47,13 +47,21 @@ function renderPage() {
   )
 }
 
+function renderPageWithQuery(q: string) {
+  return render(
+    <MemoryRouter initialEntries={[`/store?q=${encodeURIComponent(q)}`]}>
+      <StorePage />
+    </MemoryRouter>
+  )
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(productsService.getCategories).mockResolvedValue(['electronics', "men's clothing"])
 })
 
-describe('StorePage — design system Zara', () => {
-  it('CA-D8-1: grid tem classe grid-cols-2', async () => {
+describe('StorePage — design system Zattini', () => {
+  it('grid tem classe grid-cols-2', async () => {
     vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
     renderPage()
     await waitFor(() => {
@@ -62,22 +70,51 @@ describe('StorePage — design system Zara', () => {
     })
   })
 
-  it('CA-D4-3: filtros não têm rounded-full', async () => {
+  it('chip de filtro tem rounded-[20px] (pill Zattini)', async () => {
     vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
     renderPage()
     await waitFor(() => {
       const filterBtn = screen.getByRole('button', { name: /electronics/i })
-      expect(filterBtn.className).not.toContain('rounded-full')
+      expect(filterBtn.className).toContain('rounded-[20px]')
     })
   })
 
-  it('CA-D4-1: filtro ativo tem border-b-2', async () => {
+  it('chip ativo tem data-active="true" e backgroundColor brand', async () => {
     vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
     renderPage()
     await waitFor(() => {
-      // Todos os produtos — botão "Todos" está ativo por padrão
       const allBtn = screen.getByRole('button', { name: /todos/i })
-      expect(allBtn.className).toContain('border-b-2')
+      expect(allBtn.dataset.active).toBe('true')
+      expect(allBtn.style.backgroundColor).toBe('var(--c-brand)')
+    })
+  })
+})
+
+describe('StorePage — busca via URL (?q=)', () => {
+  it('F1-CA1: ?q=laptop exibe apenas produtos com "laptop" no título', async () => {
+    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    renderPageWithQuery('laptop')
+    await waitFor(() => {
+      expect(screen.getByText('laptop pro')).toBeInTheDocument()
+      expect(screen.queryByText('blue t-shirt')).not.toBeInTheDocument()
+    })
+  })
+
+  it('F1-CA2: sem ?q= exibe todos os produtos', async () => {
+    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    renderPage()
+    await waitFor(() => {
+      expect(screen.getByText('laptop pro')).toBeInTheDocument()
+      expect(screen.getByText('blue t-shirt')).toBeInTheDocument()
+    })
+  })
+
+  it('F1-CA4: busca é case-insensitive (?q=LAPTOP exibe "Laptop Pro")', async () => {
+    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    renderPageWithQuery('LAPTOP')
+    await waitFor(() => {
+      expect(screen.getByText('laptop pro')).toBeInTheDocument()
+      expect(screen.queryByText('blue t-shirt')).not.toBeInTheDocument()
     })
   })
 })

@@ -1,18 +1,41 @@
 import { render, screen } from '@testing-library/react'
 import { Button } from '../../components/ui/Button'
 
-describe('Button — design system Zara', () => {
-  it('variante primary tem bg-black', () => {
+describe('Button — design system Zattini', () => {
+  it('variante primary tem data-variant="primary"', () => {
     render(<Button variant="primary">Confirmar</Button>)
     const btn = screen.getByRole('button')
-    expect(btn.className).toContain('bg-black')
+    expect(btn.dataset.variant).toBe('primary')
   })
 
-  it('não tem rounded-lg nem rounded-xl', () => {
+  it('variante primary usa --c-brand como backgroundColor', () => {
+    render(<Button variant="primary">Confirmar</Button>)
+    const btn = screen.getByRole('button')
+    expect(btn.style.backgroundColor).toBe('var(--c-brand)')
+  })
+
+  it('variante secondary tem data-variant="secondary"', () => {
+    render(<Button variant="secondary">Cancelar</Button>)
+    const btn = screen.getByRole('button')
+    expect(btn.dataset.variant).toBe('secondary')
+  })
+
+  it('variante secondary usa --c-accent como borderColor', () => {
+    render(<Button variant="secondary">Cancelar</Button>)
+    const btn = screen.getByRole('button')
+    expect(btn.style.borderColor).toBe('var(--c-accent)')
+  })
+
+  it('tem rounded-lg (border-radius 8px Zattini)', () => {
     render(<Button>Confirmar</Button>)
     const btn = screen.getByRole('button')
-    expect(btn.className).not.toContain('rounded-lg')
-    expect(btn.className).not.toContain('rounded-xl')
+    expect(btn.className).toContain('rounded-lg')
+  })
+
+  it('tem font-semibold (font-weight 600 Zattini)', () => {
+    render(<Button>Confirmar</Button>)
+    const btn = screen.getByRole('button')
+    expect(btn.className).toContain('font-semibold')
   })
 
   it('tem uppercase e tracking-widest', () => {
@@ -32,5 +55,11 @@ describe('Button — design system Zara', () => {
     render(<Button variant="danger">Excluir</Button>)
     const btn = screen.getByRole('button')
     expect(btn.className).toContain('border-red-600')
+  })
+
+  it('loading desativa o botão', () => {
+    render(<Button loading>Salvando</Button>)
+    const btn = screen.getByRole('button')
+    expect(btn).toBeDisabled()
   })
 })

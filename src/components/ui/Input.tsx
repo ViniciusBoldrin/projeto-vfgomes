@@ -5,30 +5,29 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string
 }
 
-export function Input({ label, error, id, className, ...props }: InputProps) {
+export function Input({ label, error, id, className, placeholder, ...props }: InputProps) {
   const inputId = id ?? label.toLowerCase().replace(/\s+/g, '-')
 
   return (
-    <div className="flex flex-col gap-1">
-      <label
-        htmlFor={inputId}
-        className="text-xs uppercase tracking-widest text-neutral-500 dark:text-neutral-400"
-      >
-        {label}
-      </label>
+    <div className="input-wrapper">
       <input
         id={inputId}
+        placeholder=" "
         className={cn(
+          'input-field',
           'w-full pb-2 bg-transparent border-0 border-b text-sm transition-colors',
-          'text-black dark:text-white placeholder-neutral-400',
+          'text-black dark:text-white',
           'focus:outline-none focus:ring-0',
           error
             ? 'border-red-500 dark:border-red-400'
-            : 'border-neutral-300 dark:border-neutral-600 focus:border-black dark:focus:border-white',
+            : 'border-neutral-300 dark:border-neutral-600',
           className
         )}
         {...props}
       />
+      <label htmlFor={inputId} className="input-label">
+        {label}
+      </label>
       {error && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{error}</p>}
     </div>
   )

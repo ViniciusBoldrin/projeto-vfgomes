@@ -14,6 +14,15 @@ interface HeaderProps {
   navLinks?: { label: string; href: string }[]
 }
 
+function LockIcon() {
+  return (
+    <svg width="14" height="16" viewBox="0 0 22 25" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M16.5 7H18A7 7 0 1 0 4 7h1.5a5.5 5.5 0 1 1 11 0ZM20.5 8.5h-19v15h19v-15ZM0 7v18h22V7H0Z" />
+      <path fillRule="evenodd" clipRule="evenodd" d="m11.5 16.566.5-.448a1.5 1.5 0 1 0-2 0l.5.448V20a.5.5 0 0 0 1 0v-3.434Zm1.5.67V20a2 2 0 1 1-4 0v-2.764a3 3 0 1 1 4 0Z" />
+    </svg>
+  )
+}
+
 export function Header({
   showMenu,
   cartCount = 0,
@@ -34,7 +43,7 @@ export function Header({
 
   return (
     <>
-      <header className="h-12 sticky top-0 z-40 bg-white dark:bg-black border-b border-neutral-100 dark:border-neutral-900 flex items-center justify-between px-4 shrink-0">
+      <header className="h-14 sticky top-0 z-40 bg-white dark:bg-black border-b border-neutral-100 dark:border-neutral-900 flex items-center justify-between px-4 shrink-0">
         {/* Esquerda */}
         <div className="flex items-center gap-4 w-1/3">
           {showMenu !== undefined && (
@@ -59,8 +68,8 @@ export function Header({
 
         {/* Centro — Logo */}
         <div className="flex justify-center w-1/3">
-          <span className="font-serif text-sm tracking-[0.3em] uppercase text-black dark:text-white select-none">
-            FAKESTORE
+          <span className="font-sans font-bold text-sm tracking-[0.3em] uppercase text-black dark:text-white select-none">
+            VF GOMES
           </span>
         </div>
 
@@ -80,22 +89,33 @@ export function Header({
           )}
 
           {showCart && (
-            <button
-              onClick={onCartClick}
-              aria-label="Ver carrinho"
-              className="relative p-1 text-neutral-500 hover:text-black dark:hover:text-white transition-colors focus-visible:outline-none"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-black dark:bg-white text-white dark:text-black text-[10px] w-4 h-4 flex items-center justify-center leading-none">
-                  {cartCount}
-                </span>
-              )}
-            </button>
+            <>
+              <button
+                onClick={onCartClick}
+                aria-label="Ver carrinho"
+                className="relative p-1 text-neutral-500 hover:text-black dark:hover:text-white transition-colors focus-visible:outline-none"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                {cartCount > 0 && (
+                  <span
+                    data-badge="cart"
+                    style={{ backgroundColor: 'var(--c-brand)' }}
+                    className="absolute -top-1 -right-1 text-white text-[10px] w-4 h-4 flex items-center justify-center leading-none rounded-full"
+                  >
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              <div className="hidden md:flex items-center gap-1 text-neutral-500">
+                <LockIcon />
+                <span className="text-xs">Compra Segura</span>
+              </div>
+            </>
           )}
 
           <button

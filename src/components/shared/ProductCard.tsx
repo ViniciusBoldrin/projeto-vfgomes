@@ -32,7 +32,7 @@ export function ProductCard({ product, onEdit, onDelete, onAddToCart }: ProductC
   const isAdmin = !!onEdit
 
   return (
-    <div className="group relative flex flex-col overflow-hidden">
+    <div className="group relative flex flex-col overflow-hidden rounded-lg hover:shadow-md transition-shadow duration-300">
       {/* Imagem */}
       <div
         className="relative aspect-[3/4] w-full overflow-hidden"
@@ -68,15 +68,16 @@ export function ProductCard({ product, onEdit, onDelete, onAddToCart }: ProductC
           </div>
         )}
 
-        {/* Cliente: botão slide-up (mais premium que fade) */}
+        {/* Cliente: botão slide-up */}
         {!isAdmin && (
           <div className="absolute inset-x-0 bottom-0 overflow-hidden">
             <button
+              data-action="add-to-cart"
               onClick={() => onAddToCart?.(product)}
-              className="w-full text-xs uppercase tracking-widest py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 lowercase"
+              className="w-full text-xs uppercase tracking-widest py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
               style={{
-                backgroundColor: 'var(--c-black)',
-                color: 'var(--c-white)',
+                backgroundColor: 'var(--c-brand)',
+                color: '#fff',
                 letterSpacing: '0.15em',
               }}
             >
@@ -94,7 +95,7 @@ export function ProductCard({ product, onEdit, onDelete, onAddToCart }: ProductC
         >
           {product.title.toLowerCase()}
         </h3>
-        <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
+        <p className="text-sm mt-0.5" style={{ color: 'var(--c-muted)' }}>
           {formatCurrency(product.price)}
         </p>
       </div>

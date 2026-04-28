@@ -12,31 +12,48 @@ const mockProduct: Product = {
   rating: { rate: 4.5, count: 10 },
 }
 
-describe('ProductCard — design system Polish', () => {
+describe('ProductCard — design system Zattini', () => {
   it('container de imagem tem aspect-[3/4]', () => {
     render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
     const imageContainer = document.querySelector('[class*="aspect-"]')
     expect(imageContainer?.className).toContain('aspect-[3/4]')
   })
 
-  it('card não tem shadow nem rounded-xl no container raiz', () => {
+  it('container raiz tem rounded-lg (border-radius 8px)', () => {
     render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
-    const html = document.body.innerHTML
-    expect(html).not.toMatch(/rounded-xl[^"]*(?=")/)
+    const root = document.querySelector('[class*="rounded-lg"]')
+    expect(root).toBeTruthy()
   })
 
-  it('CA-DS4-1: botão de adicionar tem translate-y-full (slide-up, não fade)', () => {
+  it('container raiz NÃO tem rounded-xl', () => {
+    render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
+    const html = document.body.innerHTML
+    expect(html).not.toMatch(/rounded-xl/)
+  })
+
+  it('container raiz tem hover:shadow-md (elevação ao hover)', () => {
+    render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
+    const root = document.querySelector('[class*="hover:shadow"]')
+    expect(root).toBeTruthy()
+  })
+
+  it('botão de adicionar tem data-action="add-to-cart"', () => {
+    render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
+    const btn = document.querySelector('[data-action="add-to-cart"]')
+    expect(btn).toBeTruthy()
+  })
+
+  it('botão de adicionar usa --c-brand como backgroundColor', () => {
+    render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
+    const btn = document.querySelector('[data-action="add-to-cart"]') as HTMLElement
+    expect(btn?.style.backgroundColor).toBe('var(--c-brand)')
+  })
+
+  it('botão de adicionar tem translate-y-full (slide-up, não fade)', () => {
     render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
     const btn = screen.getByRole('button', { name: /adicionar/i })
     expect(btn.className).toContain('translate-y-full')
     expect(btn.className).toContain('group-hover:translate-y-0')
-  })
-
-  it('CA-DS4-1: NÃO usa opacity-0 group-hover:opacity-100 como mecanismo de reveal', () => {
-    render(<ProductCard product={mockProduct} onAddToCart={() => {}} />)
-    // O overlay container não deve ter opacity-0 class diretamente
-    const overlayWithOpacity = document.querySelector('.opacity-0.group-hover\\:opacity-100')
-    expect(overlayWithOpacity).toBeFalsy()
   })
 
   it('título do produto tem lowercase e font-light', () => {
