@@ -37,6 +37,29 @@ beforeEach(() => {
   useCartStore.setState({ items: [], total: 0 })
 })
 
+describe('CartPage — design system Zara', () => {
+  it('CA-D6-2: footer de checkout tem sticky bottom-0', () => {
+    useCartStore.setState({
+      items: [{ product: mockProduct1, quantity: 1 }],
+      total: 100,
+    })
+    renderPage()
+    const stickyEl = document.querySelector('[class*="sticky"][class*="bottom-0"]')
+    expect(stickyEl).toBeTruthy()
+  })
+
+  it('CA-D6-1: botão finalizar compra tem bg-black e uppercase', () => {
+    useCartStore.setState({
+      items: [{ product: mockProduct1, quantity: 1 }],
+      total: 100,
+    })
+    renderPage()
+    const btn = screen.getByRole('button', { name: /finalizar compra/i })
+    expect(btn.className).toContain('uppercase')
+    expect(btn.style.backgroundColor).toBeTruthy()
+  })
+})
+
 describe('CartPage', () => {
   it('shows correct subtotals and total for cart items', () => {
     // 2 laptops (100 × 2 = 200) + 1 shirt (25 × 1 = 25) = 225

@@ -7,9 +7,9 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-  { to: '/admin/users', label: 'Usuários', icon: '👥' },
-  { to: '/admin/products', label: 'Produtos', icon: '📦' },
+  { to: '/admin/dashboard', label: 'Dashboard' },
+  { to: '/admin/users', label: 'Usuários' },
+  { to: '/admin/products', label: 'Produtos' },
 ]
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
@@ -18,20 +18,23 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/40 md:hidden"
+          className="fixed inset-0 z-20 bg-black/60 md:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
         className={cn(
-          'fixed md:static z-30 md:z-auto top-16 left-0 h-[calc(100vh-4rem)] md:h-full',
-          'w-60 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700',
-          'flex flex-col py-4 transition-transform duration-300 ease-in-out',
+          'fixed md:static z-30 md:z-auto top-12 left-0 h-[calc(100vh-3rem)] md:h-full',
+          'w-56 bg-black text-white border-r border-neutral-900',
+          'flex flex-col py-6 transition-transform duration-300 ease-in-out shrink-0',
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
-        <nav className="flex-1 space-y-1 px-2">
+        <div className="px-6 mb-6">
+          <span className="text-xs uppercase tracking-widest text-neutral-500">Admin</span>
+        </div>
+        <nav className="flex-1 flex flex-col">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
@@ -39,14 +42,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200',
+                  'flex items-center px-6 py-3 text-xs uppercase tracking-widest transition-colors duration-200',
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'text-white border-l-2 border-white pl-[22px]'
+                    : 'text-neutral-500 hover:text-white hover:bg-neutral-900 border-l-2 border-transparent pl-[22px]'
                 )
               }
             >
-              <span>{item.icon}</span>
               {item.label}
             </NavLink>
           ))}

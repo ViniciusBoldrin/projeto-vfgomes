@@ -55,9 +55,10 @@ describe('ProductsPage Admin', () => {
   it('CA-F2.2-1: shows image, title, price and category for each product', () => {
     renderPage()
 
-    expect(screen.getByText('Fjallraven Backpack')).toBeInTheDocument()
+    // ProductCard renderiza títulos em lowercase
+    expect(screen.getByText('fjallraven backpack')).toBeInTheDocument()
     expect(screen.getByText(/109\.95/)).toBeInTheDocument()
-    expect(screen.getByText('Mens Casual Premium Slim Fit')).toBeInTheDocument()
+    expect(screen.getByText('mens casual premium slim fit')).toBeInTheDocument()
     expect(screen.getByText(/22\.3/)).toBeInTheDocument()
 
     const images = screen.getAllByRole('img')
@@ -79,14 +80,14 @@ describe('ProductsPage Admin', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: /salvar/i }))
 
     await waitFor(() => {
-      expect(screen.getByText('New Product')).toBeInTheDocument()
+      expect(screen.getByText('new product')).toBeInTheDocument()
     })
   })
 
   it('CA-F2.2-3: store updateProduct reflects updated title in the list', async () => {
     renderPage()
 
-    expect(screen.getByText('Fjallraven Backpack')).toBeInTheDocument()
+    expect(screen.getByText('fjallraven backpack')).toBeInTheDocument()
 
     await useProductsStore.getState().updateProduct(1, {
       title: 'Updated Backpack',
@@ -97,21 +98,21 @@ describe('ProductsPage Admin', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByText('Updated Backpack')).toBeInTheDocument()
-      expect(screen.queryByText('Fjallraven Backpack')).not.toBeInTheDocument()
+      expect(screen.getByText('updated backpack')).toBeInTheDocument()
+      expect(screen.queryByText('fjallraven backpack')).not.toBeInTheDocument()
     })
   })
 
   it('CA-F2.2-4: deletes a product and removes from the list', async () => {
     renderPage()
 
-    expect(screen.getByText('Fjallraven Backpack')).toBeInTheDocument()
+    expect(screen.getByText('fjallraven backpack')).toBeInTheDocument()
 
     const deleteButtons = screen.getAllByRole('button', { name: /excluir/i })
     await userEvent.click(deleteButtons[0])
 
     await waitFor(() => {
-      expect(screen.queryByText('Fjallraven Backpack')).not.toBeInTheDocument()
+      expect(screen.queryByText('fjallraven backpack')).not.toBeInTheDocument()
     })
   })
 })

@@ -4,6 +4,7 @@ import { ProductCard } from '../../../components/shared/ProductCard'
 import { ProductSkeleton } from '../../../components/ui/Skeleton'
 import { Button } from '../../../components/ui/Button'
 import { Toast, useToast } from '../../../components/ui/Toast'
+import { Container } from '../../../components/ui/Container'
 import type { Product } from '../../../types/product'
 
 export default function StorePage() {
@@ -26,33 +27,23 @@ export default function StorePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <Container className="py-8 md:py-12">
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
-      {/* Search + Category filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1">
-          <label htmlFor="store-search" className="sr-only">Buscar produtos</label>
-          <input
-            id="store-search"
-            type="search"
-            placeholder="Buscar produtos..."
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-          />
-        </div>
-      </div>
-
-      {/* Category pills */}
+      {/* Filtros de categoria */}
       {!loading && categories.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div
+          className="flex border-b overflow-x-auto mb-8"
+          style={{ borderColor: 'var(--c-border)' }}
+        >
           <button
             onClick={() => setSelectedCategory('')}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+            className={`shrink-0 text-xs uppercase tracking-widest py-3 px-4 transition-colors focus-visible:outline-none ${
               selectedCategory === ''
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'border-b-2 border-black dark:border-white text-black dark:text-white'
+                : ''
             }`}
+            style={selectedCategory !== '' ? { color: 'var(--c-muted)' } : undefined}
           >
             Todos
           </button>
@@ -60,11 +51,12 @@ export default function StorePage() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-all duration-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+              className={`shrink-0 text-xs uppercase tracking-widest py-3 px-4 transition-colors focus-visible:outline-none ${
                 selectedCategory === cat
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  ? 'border-b-2 border-black dark:border-white text-black dark:text-white'
+                  : ''
               }`}
+              style={selectedCategory !== cat ? { color: 'var(--c-muted)' } : undefined}
             >
               {cat}
             </button>
@@ -72,33 +64,53 @@ export default function StorePage() {
         </div>
       )}
 
-      {/* Loading state */}
+      {/* Busca oculta — acessível via ClientLayout expandível */}
+      <label htmlFor="store-search" className="sr-only">Buscar produtos</label>
+      <input
+        id="store-search"
+        type="search"
+        className="sr-only"
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+
+      {/* Loading */}
       {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductSkeleton key={i} />
+          ))}
         </div>
       )}
 
-      {/* Error state */}
+      {/* Erro */}
       {error && !loading && (
-        <div role="alert" className="text-center py-12 space-y-4">
-          <p className="text-4xl">⚠️</p>
-          <p className="text-gray-600 dark:text-gray-400">{error}</p>
+        <div role="alert" className="text-center py-16 space-y-6">
+          <p
+            className="text-xs uppercase tracking-widest"
+            style={{ color: 'var(--c-muted)' }}
+          >
+            Erro ao carregar produtos
+          </p>
+          <p className="text-sm" style={{ color: 'var(--c-muted)' }}>{error}</p>
           <Button onClick={retry}>Tentar novamente</Button>
         </div>
       )}
 
-      {/* Empty state */}
+      {/* Vazio */}
       {!loading && !error && filteredProducts.length === 0 && (
-        <div className="text-center py-12 text-gray-400 dark:text-gray-500">
-          <p className="text-4xl mb-3">🔍</p>
-          <p>Nenhum produto encontrado</p>
+        <div className="text-center py-16">
+          <p
+            className="text-xs uppercase tracking-widest"
+            style={{ color: 'var(--c-muted)' }}
+          >
+            Nenhum produto encontrado
+          </p>
         </div>
       )}
 
-      {/* Products grid */}
+      {/* Grid de produtos — gap real (não gap-px) */}
       {!loading && !error && filteredProducts.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
@@ -108,6 +120,6 @@ export default function StorePage() {
           ))}
         </div>
       )}
-    </div>
+    </Container>
   )
 }

@@ -36,6 +36,27 @@ function renderLogin() {
   )
 }
 
+describe('LoginPage — design system Zara', () => {
+  it('CA-D2-1: tem split layout md:grid-cols-2', () => {
+    renderLogin()
+    const splitLayout = document.querySelector('[class*="md:grid-cols-2"]')
+    expect(splitLayout).toBeTruthy()
+  })
+
+  it('CA-D2-2: botão submit tem bg-black e uppercase', () => {
+    renderLogin()
+    const btn = screen.getByRole('button', { name: /entrar|login/i })
+    expect(btn.className).toContain('bg-black')
+    expect(btn.className).toContain('uppercase')
+  })
+
+  it('CA-D2-3: logo FAKESTORE tem font-serif', () => {
+    renderLogin()
+    const logo = screen.getByText('FAKESTORE')
+    expect(logo.className).toContain('font-serif')
+  })
+})
+
 describe('LoginPage', () => {
   it('CA-F1-1: admin credentials redirect to /admin/dashboard', async () => {
     vi.mocked(authService.login).mockResolvedValue({ token: 'fake-token' })

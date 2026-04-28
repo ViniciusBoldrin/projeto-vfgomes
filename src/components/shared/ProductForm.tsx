@@ -60,7 +60,7 @@ export function ProductForm({ isOpen, onClose, onSubmit, initialData }: ProductF
           required
         />
         <div className="flex flex-col gap-1">
-          <label htmlFor="descricao" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="descricao" className="text-xs uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
             Descrição
           </label>
           <textarea
@@ -68,7 +68,7 @@ export function ProductForm({ isOpen, onClose, onSubmit, initialData }: ProductF
             value={form.description}
             onChange={handleChange('description')}
             rows={3}
-            className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors resize-none"
+            className="w-full pb-2 bg-transparent border-0 border-b border-neutral-300 dark:border-neutral-600 text-sm text-black dark:text-white focus:outline-none focus:border-black dark:focus:border-white transition-colors resize-none"
           />
         </div>
         <Input

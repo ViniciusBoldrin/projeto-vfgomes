@@ -1,66 +1,102 @@
-import { Badge } from '../ui/Badge'
-import { Button } from '../ui/Button'
 import { formatCurrency } from '../../utils/currency'
 import type { Product } from '../../types/product'
 
 interface ProductCardProps {
   product: Product
-  // Admin actions
   onEdit?: (product: Product) => void
   onDelete?: (id: number) => void
-  // Client action
   onAddToCart?: (product: Product) => void
+}
+
+function PencilIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  )
+}
+
+function TrashIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+    </svg>
+  )
 }
 
 export function ProductCard({ product, onEdit, onDelete, onAddToCart }: ProductCardProps) {
   const isAdmin = !!onEdit
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition-all duration-200 hover:scale-[1.01] flex flex-col overflow-hidden">
-      <div className="relative h-48 bg-gray-50 dark:bg-gray-700 flex items-center justify-center p-4">
+    <div className="group relative flex flex-col overflow-hidden">
+      {/* Imagem */}
+      <div
+        className="relative aspect-[3/4] w-full overflow-hidden"
+        style={{ backgroundColor: 'var(--c-subtle)' }}
+      >
         <img
           src={product.image}
           alt={product.title}
-          className="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal"
+          className="w-full h-full object-contain"
         />
+
+        {/* Admin: botões de ação */}
+        {isAdmin && (
+          <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <button
+              onClick={() => onEdit!(product)}
+              aria-label="Editar produto"
+              title="Editar"
+              className="p-1.5 transition-colors"
+              style={{ backgroundColor: 'var(--c-surface)', color: 'var(--c-muted)' }}
+            >
+              <PencilIcon />
+            </button>
+            <button
+              onClick={() => onDelete!(product.id)}
+              aria-label="Excluir produto"
+              title="Excluir"
+              className="p-1.5 transition-colors hover:text-red-600"
+              style={{ backgroundColor: 'var(--c-surface)', color: 'var(--c-muted)' }}
+            >
+              <TrashIcon />
+            </button>
+          </div>
+        )}
+
+        {/* Cliente: botão slide-up (mais premium que fade) */}
+        {!isAdmin && (
+          <div className="absolute inset-x-0 bottom-0 overflow-hidden">
+            <button
+              onClick={() => onAddToCart?.(product)}
+              className="w-full text-xs uppercase tracking-widest py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 lowercase"
+              style={{
+                backgroundColor: 'var(--c-black)',
+                color: 'var(--c-white)',
+                letterSpacing: '0.15em',
+              }}
+            >
+              Adicionar
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="p-4 flex flex-col flex-1 gap-2">
-        <Badge label={product.category} />
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 flex-1">
-          {product.title}
+      {/* Info */}
+      <div className="pt-3 pb-2">
+        <h3
+          className="text-xs font-light lowercase tracking-wide line-clamp-2"
+          style={{ color: 'var(--c-text)' }}
+        >
+          {product.title.toLowerCase()}
         </h3>
-        <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
+        <p className="text-xs mt-0.5" style={{ color: 'var(--c-muted)' }}>
           {formatCurrency(product.price)}
         </p>
-
-        {isAdmin ? (
-          <div className="flex gap-2 mt-1">
-            <Button
-              variant="secondary"
-              onClick={() => onEdit!(product)}
-              aria-label="Editar"
-              className="flex-1 text-xs"
-            >
-              Editar
-            </Button>
-            <Button
-              variant="danger"
-              onClick={() => onDelete!(product.id)}
-              aria-label="Excluir"
-              className="flex-1 text-xs"
-            >
-              Excluir
-            </Button>
-          </div>
-        ) : (
-          <Button
-            onClick={() => onAddToCart?.(product)}
-            className="w-full mt-1 text-sm"
-          >
-            + Adicionar ao carrinho
-          </Button>
-        )}
       </div>
     </div>
   )

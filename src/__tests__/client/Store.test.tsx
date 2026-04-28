@@ -52,6 +52,36 @@ beforeEach(() => {
   vi.mocked(productsService.getCategories).mockResolvedValue(['electronics', "men's clothing"])
 })
 
+describe('StorePage — design system Zara', () => {
+  it('CA-D8-1: grid tem classe grid-cols-2', async () => {
+    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    renderPage()
+    await waitFor(() => {
+      const grid = document.querySelector('[class*="grid-cols-2"]')
+      expect(grid).toBeTruthy()
+    })
+  })
+
+  it('CA-D4-3: filtros não têm rounded-full', async () => {
+    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    renderPage()
+    await waitFor(() => {
+      const filterBtn = screen.getByRole('button', { name: /electronics/i })
+      expect(filterBtn.className).not.toContain('rounded-full')
+    })
+  })
+
+  it('CA-D4-1: filtro ativo tem border-b-2', async () => {
+    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    renderPage()
+    await waitFor(() => {
+      // Todos os produtos — botão "Todos" está ativo por padrão
+      const allBtn = screen.getByRole('button', { name: /todos/i })
+      expect(allBtn.className).toContain('border-b-2')
+    })
+  })
+})
+
 describe('StorePage (Client)', () => {
   it('CA-F3.1-1: shows product cards with title and price', async () => {
     vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
@@ -59,9 +89,9 @@ describe('StorePage (Client)', () => {
     renderPage()
 
     await waitFor(() => {
-      expect(screen.getByText('Laptop Pro')).toBeInTheDocument()
+      expect(screen.getByText('laptop pro')).toBeInTheDocument()
       expect(screen.getByText(/999\.99/)).toBeInTheDocument()
-      expect(screen.getByText('Blue T-Shirt')).toBeInTheDocument()
+      expect(screen.getByText('blue t-shirt')).toBeInTheDocument()
       expect(screen.getByText(/29\.99/)).toBeInTheDocument()
     })
   })
@@ -73,14 +103,14 @@ describe('StorePage (Client)', () => {
 
     // Wait for products to load
     await waitFor(() => {
-      expect(screen.getByText('Laptop Pro')).toBeInTheDocument()
+      expect(screen.getByText('laptop pro')).toBeInTheDocument()
     })
 
     // Click on "electronics" category filter
     await userEvent.click(screen.getByRole('button', { name: /electronics/i }))
 
-    expect(screen.getByText('Laptop Pro')).toBeInTheDocument()
-    expect(screen.queryByText('Blue T-Shirt')).not.toBeInTheDocument()
+    expect(screen.getByText('laptop pro')).toBeInTheDocument()
+    expect(screen.queryByText('blue t-shirt')).not.toBeInTheDocument()
   })
 
   it('CA-F3.1-3: shows loading state while API is pending', () => {

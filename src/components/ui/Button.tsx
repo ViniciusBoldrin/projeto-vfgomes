@@ -9,10 +9,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-blue-600 hover:bg-blue-700 text-white disabled:bg-blue-400',
-  secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100',
-  danger: 'bg-red-600 hover:bg-red-700 text-white disabled:bg-red-400',
-  ghost: 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300',
+  primary: 'bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-400',
+  secondary: 'bg-white text-black border border-black hover:bg-neutral-50 dark:bg-black dark:text-white dark:border-white dark:hover:bg-neutral-900',
+  danger: 'bg-black text-white border border-red-600 hover:bg-red-600 disabled:opacity-50',
+  ghost: 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-300',
 }
 
 export function Button({ variant = 'primary', loading, children, className, disabled, ...props }: ButtonProps) {
@@ -20,9 +20,9 @@ export function Button({ variant = 'primary', loading, children, className, disa
     <button
       disabled={disabled || loading}
       className={cn(
-        'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200',
-        'hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
-        'disabled:cursor-not-allowed disabled:opacity-60 disabled:scale-100',
+        'inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium tracking-widest uppercase transition-colors duration-200',
+        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         variants[variant],
         className
       )}

@@ -22,10 +22,9 @@ export function Toast({ message, type = 'success', onClose, duration = 3000 }: T
   return (
     <div
       className={cn(
-        'fixed top-4 right-4 z-[100] flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium',
-        'transition-all duration-300',
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2',
-        type === 'success' ? 'bg-green-600' : 'bg-red-600'
+        'fixed top-4 right-4 z-[100] flex items-center gap-3 px-5 py-3 text-white text-xs font-medium tracking-wide',
+        'bg-black transition-all duration-300',
+        visible ? 'opacity-100 translate-y-0 animate-fade-up' : 'opacity-0 -translate-y-2'
       )}
       role="status"
     >

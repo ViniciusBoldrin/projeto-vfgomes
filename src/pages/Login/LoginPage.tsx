@@ -30,56 +30,70 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 animate-fade-in">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">FakeStore</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Entre na sua conta</p>
-        </div>
+    <div className="min-h-screen grid md:grid-cols-2">
+      {/* Lado esquerdo: imagem editorial */}
+      <div className="hidden md:block bg-neutral-100 dark:bg-neutral-900 overflow-hidden">
+        <img
+          src="https://fakestoreapi.com/img/81fAn0X5zhL._AC_UY550_.jpg"
+          alt="Fashion"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              autoComplete="username"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-              placeholder="seu username"
-            />
-          </div>
+      {/* Lado direito: formulário */}
+      <div className="flex flex-col items-center justify-center px-8 md:px-16 bg-white dark:bg-black min-h-screen md:min-h-0">
+        {/* Logo */}
+        <h1 className="font-serif text-2xl tracking-[0.4em] uppercase text-black dark:text-white mb-12">
+          FAKESTORE
+        </h1>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Senha
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-              placeholder="••••••••"
-            />
+        <form onSubmit={handleSubmit} noValidate className="w-full max-w-xs space-y-8">
+          <div className="space-y-6">
+            <div className="flex flex-col gap-1">
+              <label
+                htmlFor="username"
+                className="text-xs uppercase tracking-widest text-neutral-500"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                autoComplete="username"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                aria-label="username"
+                className="w-full pb-2 bg-transparent border-0 border-b border-neutral-300 dark:border-neutral-600 text-sm text-black dark:text-white placeholder-neutral-400 focus:outline-none focus:border-black dark:focus:border-white transition-colors"
+                placeholder="seu username"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label
+                htmlFor="password"
+                className="text-xs uppercase tracking-widest text-neutral-500"
+              >
+                Senha
+              </label>
+              <input
+                id="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                aria-label="password"
+                className="w-full pb-2 bg-transparent border-0 border-b border-neutral-300 dark:border-neutral-600 text-sm text-black dark:text-white placeholder-neutral-400 focus:outline-none focus:border-black dark:focus:border-white transition-colors"
+                placeholder="••••••••"
+              />
+            </div>
           </div>
 
           {error && (
             <div
               role="alert"
-              className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm"
+              className="text-xs text-red-600 dark:text-red-400 py-2 border-b border-red-200"
             >
               {error}
             </div>
@@ -88,13 +102,13 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+            className="w-full bg-black text-white text-xs uppercase tracking-widest py-3.5 transition-colors hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black"
           >
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-gray-400 dark:text-gray-500">
+        <p className="mt-12 text-center text-xs text-neutral-300 dark:text-neutral-700">
           Admin: mor_2314 · Cliente: kevinryan
         </p>
       </div>

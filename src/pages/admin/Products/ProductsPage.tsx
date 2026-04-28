@@ -41,38 +41,39 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {toast && <Toast message={toast.message} type={toast.type} onClose={closeToast} />}
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Produtos</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{products.length} produtos cadastrados</p>
+          <h1 className="font-serif text-xl tracking-widest uppercase text-black dark:text-white">Produtos</h1>
+          <p className="text-xs uppercase tracking-widest text-neutral-400 mt-1">{products.length} cadastrados</p>
         </div>
         <Button onClick={openCreate}>+ Novo Produto</Button>
       </div>
 
       {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <ProductSkeleton key={i} />
+          ))}
         </div>
       )}
 
       {error && (
-        <div role="alert" className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4 text-red-700 dark:text-red-400">
+        <div role="alert" className="border border-red-200 p-4 text-xs text-red-600">
           {error}
         </div>
       )}
 
       {!loading && !error && products.length === 0 && (
-        <div className="text-center py-12 text-gray-400 dark:text-gray-500">
-          <p className="text-4xl mb-3">📦</p>
-          <p>Nenhum produto cadastrado</p>
+        <div className="text-center py-12">
+          <p className="text-xs uppercase tracking-widest text-neutral-400">Nenhum produto cadastrado</p>
         </div>
       )}
 
       {!loading && products.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products.map((product) => (
             <ProductCard
               key={product.id}

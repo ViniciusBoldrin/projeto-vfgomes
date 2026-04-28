@@ -7,18 +7,17 @@ interface SkeletonProps {
 export function Skeleton({ className }: SkeletonProps) {
   return (
     <div
-      className={cn('animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg', className)}
+      className={cn('animate-pulse bg-neutral-100 dark:bg-neutral-800', className)}
     />
   )
 }
 
 export function ProductSkeleton() {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 flex flex-col gap-3" data-testid="loading">
-      <Skeleton className="h-48 w-full" />
-      <Skeleton className="h-4 w-3/4" />
-      <Skeleton className="h-4 w-1/2" />
-      <Skeleton className="h-8 w-full" />
+    <div className="flex flex-col gap-2" data-testid="loading">
+      <Skeleton className="aspect-[3/4] w-full" />
+      <Skeleton className="h-3 w-3/4 mt-2" />
+      <Skeleton className="h-3 w-1/3" />
     </div>
   )
 }
