@@ -50,9 +50,9 @@ describe('LoginPage — design system Zara', () => {
     expect(btn.className).toContain('uppercase')
   })
 
-  it('CA-D2-3: logo VF GOMES tem font-serif', () => {
+  it('CA-D2-3: logo VF GOMES outlet tem font-serif', () => {
     renderLogin()
-    const logo = screen.getByText('VF GOMES')
+    const logo = screen.getByText('VF GOMES outlet')
     expect(logo.className).toContain('font-serif')
   })
 
