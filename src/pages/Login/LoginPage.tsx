@@ -36,7 +36,7 @@ export default function LoginPage() {
       {/* Lado esquerdo: imagem editorial */}
       <div className="hidden md:block bg-neutral-100 dark:bg-neutral-900 overflow-hidden">
         <img
-          src="https://fakestoreapi.com/img/81fAn0X5zhL._AC_UY550_.jpg"
+          src="https://images.pexels.com/photos/7667437/pexels-photo-7667437.jpeg?_gl=1*1hwbtlh*_ga*MTU0MDIwMzcxOC4xNzc3NDA2NDAw*_ga_8JE65Q40S6*czE3Nzc0MDY0MDAkbzEkZzEkdDE3Nzc0MDY0MjkkajMxJGwwJGgw"
           alt="Fashion"
           className="w-full h-full object-cover"
         />
@@ -46,7 +46,7 @@ export default function LoginPage() {
       <div className="flex flex-col items-center justify-center px-8 md:px-16 bg-white dark:bg-black min-h-screen md:min-h-0">
         {/* Logo */}
         <h1 className="font-serif text-2xl tracking-[0.4em] uppercase text-black dark:text-white mb-12">
-          VF GOMES
+          VF GOMES outlet
         </h1>
 
         <form onSubmit={handleSubmit} noValidate className="w-full max-w-xs space-y-8">
