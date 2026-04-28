@@ -1,75 +1,97 @@
-# FakeStore E-commerce
+# VF GOMES outlet — E-commerce
 
 Mini e-commerce desenvolvido como teste técnico, consumindo a [FakeStore API](https://fakestoreapi.com/).
 
+> Design inspirado na identidade visual da Zattini: coral brand (`#f4546a`), tipografia refinada, banners promocionais, chips de categoria e layout responsivo.
+
 ## Stack
 
-- **React 19** + **TypeScript** — framework base
-- **Vite 8** — build tool
-- **Tailwind CSS v4** — estilos com dark mode
-- **React Router DOM v7** — roteamento SPA
-- **Zustand** — estado global (cart, auth)
-- **Axios** — cliente HTTP com interceptors
-- **Vitest** + **Testing Library** — testes unitários e de integração
+| Camada | Tecnologia |
+|--------|-----------|
+| UI | React 19 + TypeScript |
+| Build | Vite 8 |
+| Estilos | Tailwind CSS v4 (design tokens, dark mode) |
+| Roteamento | React Router DOM v7 |
+| Estado global | Zustand 5 (cart, auth, products, users) |
+| HTTP | Axios com interceptors |
+| Testes | Vitest 4 + Testing Library (118 testes) |
 
-## Como instalar e rodar
+## Como rodar
 
 ```bash
-# Instalar dependências
 npm install
-
-# Rodar em desenvolvimento
-npm run dev
-
-# Rodar testes
-npm test
-
-# Build de produção
-npm run build
+npm run dev        # http://localhost:5173
+npm test           # watch mode
+npm run test:run   # CI / single run
+npm run build      # build de produção
 ```
 
-## Contas de acesso
+## Acesso
 
 | Perfil | Username | Senha |
-|---|---|---|
+|--------|----------|-------|
 | Administrador | `mor_2314` | `83r5^_` |
 | Cliente | `kevinryan` | `kev02937@` |
 
 ## Funcionalidades
 
 ### Autenticação
-- [x] Login via FakeStore API
-- [x] Separação de perfis (admin / cliente)
-- [x] Proteção de rotas por perfil
-- [x] Redirecionamento automático por role
+- Login via FakeStore API com JWT
+- Separação de perfis: admin e cliente
+- Proteção de rotas por perfil (`PrivateRoute`, `AdminRoute`, `ClientRoute`)
+- Redirecionamento automático por role
+- Logout limpa sessão e carrinho
 
 ### Área Admin
-- [x] Dashboard com totais (usuários, produtos, categorias)
-- [x] Listagem de usuários
-- [x] Criar, editar e excluir usuários (mock com LocalStorage)
-- [x] Listagem de produtos com imagem, preço e categoria
-- [x] Criar, editar e excluir produtos (mock com LocalStorage)
+- Dashboard com totais (usuários, produtos, categorias)
+- CRUD completo de produtos (título, preço, descrição, categoria, imagem)
+- CRUD completo de usuários
+- Persistência local via localStorage — dados sobrevivem ao reload
 
-### Área Cliente
-- [x] Listagem de produtos com filtro por categoria
-- [x] Busca por nome (filtro local)
-- [x] Adicionar ao carrinho / alterar quantidade / remover
-- [x] Subtotal por item e total geral
-- [x] Finalização de compra (mock)
+### Loja (área cliente)
+- Banners promocionais com rotação automática
+- Filtro de produtos por categoria (chips estilo Zattini)
+- Busca por nome via URL (`/store?q=termo`) — compartilhável
+- Input do header sincronizado com o parâmetro da URL
+- Adicionar ao carrinho / alterar quantidade / remover item
+- Subtotal por item e total geral
+- Finalização de compra (mock)
 
-### UX / Design
-- [x] Layout responsivo (mobile, tablet, desktop)
-- [x] Tema claro / escuro com persistência
-- [x] Estados de loading (skeletons), erro e lista vazia
-- [x] Feedback visual em interações (hover, active, transições)
-- [x] Acessibilidade básica (labels, alt, focus-visible, role=alert)
+### UX / Qualidade
+- Layout responsivo: mobile, tablet e desktop
+- Tema claro / escuro com ícones sol/lua e persistência em localStorage
+- Skeletons de loading, estado de erro com retry, estado de lista vazia
+- Feedback visual em todas as interações (hover, transições, toast)
+- Acessibilidade: `aria-label`, `alt`, `role=alert`, `focus-visible`
 
-## Diferenciais implementados
+## Arquitetura
 
-- **Zustand** para estado global (cart e auth)
-- **Vitest + Testing Library** — 28 testes cobrindo todos os critérios de aceite
-- Tratamento avançado de erros com retry na loja
+```
+src/
+├── components/
+│   ├── layout/          # ClientLayout, AdminLayout, Header, Sidebar, PrivateRoute
+│   ├── shared/          # ProductCard, ProductForm, UserForm, CartItem
+│   └── ui/              # Button, Input, Modal, Toast, Skeleton, Container
+├── context/             # ThemeContext (dark/light mode)
+├─�� hooks/               # useProducts (consome productsStore)
+├── pages/
+│   ├── Login/
+│   ├── admin/           # Dashboard, Products, Users
+│   └── client/          # Store, Cart
+├── services/            # API (axios), authService, productsService, usersService
+├── store/               # Zustand: authStore, cartStore, productsStore, usersStore
+├── types/               # Product, User, Auth
+└── utils/               # localStorage, currency, cn
+```
 
-## Observação sobre dados mock
+## Destaques técnicos
 
-A FakeStore API é read-only. Todas as operações de escrita (criar/editar/excluir usuários e produtos) são simuladas localmente via **LocalStorage**. Os dados são preservados entre sessões do browser, mas se perdem ao limpar o localStorage.
+- **Fonte de verdade única**: `useProducts` consome `useProductsStore` — produtos criados na admin aparecem imediatamente na loja sem reload
+- **Busca via URL**: parâmetro `?q=` lido com `useSearchParams`, mantendo a busca ao compartilhar ou recarregar a página
+- **TDD**: todos os critérios de aceite cobertos por testes antes da implementação (Red → Green → Refactor)
+- **Hardening**: senhas não persistidas em localStorage, credenciais removidas do HTML, carrinho limpo no logout
+- **118 testes** passando — unitários, integração e design system
+
+## Observação sobre a API
+
+A FakeStore API é read-only para mutações. Operações de escrita (criar/editar/excluir) são simuladas localmente via localStorage e persistem entre sessões do browser.
