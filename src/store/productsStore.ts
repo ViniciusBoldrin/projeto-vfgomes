@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Product, ProductFormData } from '../types/product'
 import { productsService } from '../services/productsService'
-import { getItem, setItem } from '../utils/localStorage'
+import { getItem, setItem, removeItem } from '../utils/localStorage'
 
 const STORAGE_KEY = 'admin_products'
 
@@ -10,6 +10,7 @@ interface ProductsStore {
   loading: boolean
   error: string | null
   init: () => Promise<void>
+  reload: () => Promise<void>
   addProduct: (data: ProductFormData) => Promise<void>
   updateProduct: (id: number, data: ProductFormData) => Promise<void>
   removeProduct: (id: number) => Promise<void>
@@ -35,6 +36,12 @@ export const useProductsStore = create<ProductsStore>()((set, get) => ({
     } catch (err) {
       set({ error: (err as Error).message, loading: false })
     }
+  },
+
+  reload: async () => {
+    set({ products: [], error: null })
+    removeItem(STORAGE_KEY)
+    await get().init()
   },
 
   addProduct: async (data) => {

@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { productsService } from '../services/productsService'
-import type { Product } from '../types/product'
+import { useEffect, useMemo, useState } from 'react'
+import { useProductsStore } from '../store/productsStore'
 
 interface UseProductsResult {
-  products: Product[]
-  filteredProducts: Product[]
+  products: ReturnType<typeof useProductsStore.getState>['products']
+  filteredProducts: ReturnType<typeof useProductsStore.getState>['products']
   categories: string[]
   selectedCategory: string
   searchQuery: string
@@ -16,34 +15,18 @@ interface UseProductsResult {
 }
 
 export function useProducts(): UseProductsResult {
-  const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<string[]>([])
+  const { products, loading, error, init, reload } = useProductsStore()
   const [selectedCategory, setSelectedCategory] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [tick, setTick] = useState(0)
-
-  const load = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const [prods, cats] = await Promise.all([
-        productsService.getAll(),
-        productsService.getCategories(),
-      ])
-      setProducts(prods)
-      setCategories(cats)
-    } catch (err) {
-      setError((err as Error).message)
-    } finally {
-      setLoading(false)
-    }
-  }, [tick]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    load()
-  }, [load])
+    init()
+  }, [init])
+
+  const categories = useMemo(
+    () => [...new Set(products.map((p) => p.category))].sort(),
+    [products]
+  )
 
   const filteredProducts = useMemo(() => {
     let result = products
@@ -58,7 +41,7 @@ export function useProducts(): UseProductsResult {
   }, [products, selectedCategory, searchQuery])
 
   function retry() {
-    setTick((t) => t + 1)
+    reload()
   }
 
   return {

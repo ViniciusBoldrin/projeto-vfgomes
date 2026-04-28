@@ -2,7 +2,10 @@ import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { vi } from 'vitest'
 import StorePage from '../../pages/client/Store/StorePage'
+import { useProductsStore } from '../../store/productsStore'
+import type { Product } from '../../types/product'
 
+// productsService mockado pois productsStore.init() o usa internamente
 vi.mock('../../services/productsService', () => ({
   productsService: {
     getAll: vi.fn(),
@@ -13,9 +16,6 @@ vi.mock('../../services/productsService', () => ({
     remove: vi.fn(),
   },
 }))
-
-import { productsService } from '../../services/productsService'
-import type { Product } from '../../types/product'
 
 const mockProducts: Product[] = [
   {
@@ -31,8 +31,8 @@ const mockProducts: Product[] = [
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(productsService.getCategories).mockResolvedValue(['electronics'])
-  vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+  localStorage.clear()
+  useProductsStore.setState({ products: mockProducts, loading: false, error: null })
 })
 
 function renderPage() {

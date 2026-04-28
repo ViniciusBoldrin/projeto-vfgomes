@@ -3,7 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { vi } from 'vitest'
 import StorePage from '../../pages/client/Store/StorePage'
+import { useProductsStore } from '../../store/productsStore'
+import type { Product } from '../../types/product'
 
+// productsService ainda é mockado pois productsStore.init() o usa internamente
 vi.mock('../../services/productsService', () => ({
   productsService: {
     getAll: vi.fn(),
@@ -16,7 +19,6 @@ vi.mock('../../services/productsService', () => ({
 }))
 
 import { productsService } from '../../services/productsService'
-import type { Product } from '../../types/product'
 
 const mockProducts: Product[] = [
   {
@@ -57,12 +59,13 @@ function renderPageWithQuery(q: string) {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(productsService.getCategories).mockResolvedValue(['electronics', "men's clothing"])
+  localStorage.clear()
+  useProductsStore.setState({ products: [], loading: false, error: null })
 })
 
 describe('StorePage — design system Zattini', () => {
   it('grid tem classe grid-cols-2', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPage()
     await waitFor(() => {
       const grid = document.querySelector('[class*="grid-cols-2"]')
@@ -71,7 +74,7 @@ describe('StorePage — design system Zattini', () => {
   })
 
   it('chip de filtro tem rounded-[20px] (pill Zattini)', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPage()
     await waitFor(() => {
       const filterBtn = screen.getByRole('button', { name: /electronics/i })
@@ -80,7 +83,7 @@ describe('StorePage — design system Zattini', () => {
   })
 
   it('chip ativo tem data-active="true" e backgroundColor brand', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPage()
     await waitFor(() => {
       const allBtn = screen.getByRole('button', { name: /todos/i })
@@ -92,7 +95,7 @@ describe('StorePage — design system Zattini', () => {
 
 describe('StorePage — busca via URL (?q=)', () => {
   it('F1-CA1: ?q=laptop exibe apenas produtos com "laptop" no título', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPageWithQuery('laptop')
     await waitFor(() => {
       expect(screen.getByText('laptop pro')).toBeInTheDocument()
@@ -101,7 +104,7 @@ describe('StorePage — busca via URL (?q=)', () => {
   })
 
   it('F1-CA2: sem ?q= exibe todos os produtos', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPage()
     await waitFor(() => {
       expect(screen.getByText('laptop pro')).toBeInTheDocument()
@@ -110,7 +113,7 @@ describe('StorePage — busca via URL (?q=)', () => {
   })
 
   it('F1-CA4: busca é case-insensitive (?q=LAPTOP exibe "Laptop Pro")', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPageWithQuery('LAPTOP')
     await waitFor(() => {
       expect(screen.getByText('laptop pro')).toBeInTheDocument()
@@ -121,10 +124,8 @@ describe('StorePage — busca via URL (?q=)', () => {
 
 describe('StorePage (Client)', () => {
   it('CA-F3.1-1: shows product cards with title and price', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
-
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPage()
-
     await waitFor(() => {
       expect(screen.getByText('laptop pro')).toBeInTheDocument()
       expect(screen.getByText(/999\.99/)).toBeInTheDocument()
@@ -134,16 +135,13 @@ describe('StorePage (Client)', () => {
   })
 
   it('CA-F3.1-2: filtering by category shows only that category products', async () => {
-    vi.mocked(productsService.getAll).mockResolvedValue(mockProducts)
-
+    useProductsStore.setState({ products: mockProducts, loading: false, error: null })
     renderPage()
 
-    // Wait for products to load
     await waitFor(() => {
       expect(screen.getByText('laptop pro')).toBeInTheDocument()
     })
 
-    // Click on "electronics" category filter
     await userEvent.click(screen.getByRole('button', { name: /electronics/i }))
 
     expect(screen.getByText('laptop pro')).toBeInTheDocument()
@@ -154,17 +152,14 @@ describe('StorePage (Client)', () => {
     vi.mocked(productsService.getAll).mockImplementation(
       () => new Promise(() => {}) // never resolves
     )
-
+    useProductsStore.setState({ products: [], loading: true, error: null })
     renderPage()
-
     expect(screen.getAllByTestId('loading').length).toBeGreaterThan(0)
   })
 
   it('CA-F3.1-4: shows error message with retry button when API fails', async () => {
     vi.mocked(productsService.getAll).mockRejectedValue(new Error('Network error'))
-
     renderPage()
-
     await waitFor(() => {
       expect(screen.getByRole('alert')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument()
